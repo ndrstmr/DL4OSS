@@ -64,9 +64,9 @@
             padding: 0 20px;
         }
 
-        /* Stile für die Sprecher und Anweisungen */
-        .speaker-andreas { color: #76ff03; font-weight: bold; }
-        .speaker-achim { color: #40c4ff; font-weight: bold; }
+        /* Stile für die Sprecher-Namen und Anweisungen */
+        .speaker-andreas .speaker-name { color: #76ff03; font-weight: bold; }
+        .speaker-achim .speaker-name { color: #40c4ff; font-weight: bold; }
         .direction { color: #9e9e9e; font-style: italic; display: block; font-size: 0.8em; }
         
         /* Die Fokus-Linie in der Mitte */
@@ -107,7 +107,7 @@
             align-items: center;
             padding: 15px 0;
             z-index: 20;
-            display: none;
+            display: none; /* Initial ausgeblendet */
         }
 
         .mobile-controls button {
@@ -124,13 +124,13 @@
         }
 
         /* Anzeige der Scrollgeschwindigkeit */
-        .speed-display {
+        .食品安全 .speed-display {
             font-size: 14px;
             color: #e0e0e0;
             margin: 0 10px;
         }
 
-        /* Media08.07.2025 Media Query für mobile Geräte */
+        /* Media Query für mobile Geräte */
         @media (max-width: 768px) {
             .teleprompter {
                 width: 95%;
@@ -139,9 +139,7 @@
             .controls-info {
                 display: none;
             }
-            .mobile-controls {
-                display: flex;
-            }
+            /* .mobile-controls wird nicht hier eingeblendet, sondern per JS nach Start */
         }
     </style>
 </head>
@@ -199,8 +197,12 @@
                 
                 // Skript-Inhalt dynamisch erstellen
                 scriptContent.innerHTML = scriptData.map(item => {
-                    const className = item.type === 'direction' ? 'direction' : item.type;
-                    return `<p><span class="${className}">${item.type.startsWith('speaker-') ? item.type.split('-')[1] + ': ' : ''}${item.text}</span></p>`;
+                    if (item.type === 'direction') {
+                        return `<p><span class="direction">${item.text}</span></p>`;
+                    } else {
+                        const speakerName = item.type.split('-')[1].charAt(0).toUpperCase() + item.type.split('-')[1].slice(1);
+                        return `<p><span class="${item.type}"><span class="speaker-name">${speakerName}:</span> ${item.text}</span></p>`;
+                    }
                 }).join('');
             } catch (error) {
                 console.error('Fehler beim Laden des Skripts:', error);
