@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Entwickler-Behörde | Live-Podcast Skript</title>
     <style>
         /* Grundlegende Stile & Dark Mode */
@@ -42,24 +42,19 @@
             max-width: 900px;
             height: 100%;
             margin: 0 auto;
-            font-size: 2.2vw; /* Skaliert mit der Fensterbreite */
+            font-size: 28px; /* Feste Größe für Desktop */
             line-height: 1.6;
             text-align: center;
             overflow: hidden;
             display: none; /* Standardmäßig ausgeblendet */
         }
-        @media (min-width: 1200px) {
-            .teleprompter {
-                font-size: 28px; /* Feste Größe für große Bildschirme */
-            }
-        }
-
+       
         /* Der eigentliche Skript-Inhalt, der gescrollt wird */
         .script-content {
             position: absolute;
             left: 0;
             right: 0;
-            top: 100%; /* Startet außerhalb des sichtbaren Bereichs unten */
+            top: 100%; 
             transform: translateY(0);
             will-change: transform;
         }
@@ -70,22 +65,9 @@
         }
 
         /* Stile für die Sprecher und Anweisungen */
-        .speaker-andreas {
-            color: #76ff03; /* Helles Grün */
-            font-weight: bold;
-        }
-
-        .speaker-achim {
-            color: #40c4ff; /* Helles Blau */
-            font-weight: bold;
-        }
-
-        .direction {
-            color: #9e9e9e; /* Grau */
-            font-style: italic;
-            display: block;
-            font-size: 0.8em;
-        }
+        .speaker-andreas { color: #76ff03; font-weight: bold; }
+        .speaker-achim { color: #40c4ff; font-weight: bold; }
+        .direction { color: #9e9e9e; font-style: italic; display: block; font-size: 0.8em; }
         
         /* Die Fokus-Linie in der Mitte */
         .focus-line {
@@ -95,23 +77,63 @@
             right: 0;
             height: 2px;
             background-color: rgba(255, 0, 0, 0.4);
-            box-shadow: 0 0 10px rgba(255, 0, 0, 0.4);
             z-index: 10;
-            display: none; /* Standardmäßig ausgeblendet */
+            display: none;
         }
 
-        /* Anleitung für die Steuerung */
+        /* Anleitung für die Desktop-Steuerung */
         .controls-info {
             position: fixed;
             bottom: 10px;
             right: 10px;
             background-color: rgba(0, 0, 0, 0.7);
-            color: #fff;
             padding: 10px 15px;
             border-radius: 5px;
             font-size: 14px;
             z-index: 20;
-            display: none; /* Standardmäßig ausgeblendet */
+            display: none;
+        }
+        
+        /* On-Screen-Steuerung für Mobile */
+        .mobile-controls {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: rgba(40, 40, 40, 0.8);
+            backdrop-filter: blur(5px);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 15px 0;
+            z-index: 20;
+            display: none; /* Standardmäßig auf Desktop ausblenden */
+        }
+
+        .mobile-controls button {
+            background: #fff;
+            border: none;
+            color: #121212;
+            font-size: 24px;
+            font-weight: bold;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        /* Media Query für mobile Geräte */
+        @media (max-width: 768px) {
+            .teleprompter {
+                width: 95%;
+                font-size: 5vw; /* Schriftgröße an Bildschirmbreite anpassen */
+            }
+            .controls-info {
+                display: none; /* Desktop-Anleitung auf Mobilgeräten ausblenden */
+            }
+            .mobile-controls {
+                display: flex; /* Mobile-Steuerung auf Mobilgeräten anzeigen */
+            }
         }
     </style>
 </head>
@@ -124,78 +146,50 @@
         <b>Steuerung:</b> [Leertaste] = Pause/Play | [+] = Schneller | [-] = Langsamer
     </div>
 
+    <div class="mobile-controls" id="mobile-controls">
+        <button id="slow-btn">-</button>
+        <button id="play-pause-btn">▶</button>
+        <button id="fast-btn">+</button>
+    </div>
+
     <div class="teleprompter" id="teleprompter">
         <div class="script-content" id="script-content">
             <p><span class="direction">[Ein kurzer, moderner Jingle, der wie ein Code-Compiler-Sound endet. Musik blendet aus.]</span></p>
-
             <p><span class="speaker-andreas">Andreas:</span> Hallo und herzlich willkommen zur allerersten Folge von "Entwickler-Behörde"! Dem Live-Podcast, unterstützt von der "public sector dev crew". Hej, das seid ihr alle hier. Mein Name ist Andreas, Entwicklungsleiter für Web- und Shop-Portale hier bei Dataport. Normalerweise spreche ich über TYPO3-Themen oder Shopware und manchmal auch über Künstliche Intelligenz. Heute aber über ein Regelwerk. Dazu begrüße ich meinen Chef und heutigen Gast: Achim. Hallo Achim!</p>
-
             <p><span class="speaker-achim">Achim:</span> Hallo Andreas. Danke, dass ich bei der Premiere dabei sein darf.</p>
-
             <p><span class="speaker-andreas">Andreas:</span> Sehr gerne. Achim, wir haben in den letzten Wochen, eine `Arbeitsanweisung für Open-Source-Veröffentlichungen` für unser CCW geschrieben. Bevor ich uns durch den Dschungel der Paragrafen führe, hol uns doch mal ab: Warum treibst du als Abteilungsleiter dieses Thema mit so einer Energie voran?</p>
-
             <p><span class="speaker-achim">Achim:</span> <span class="direction">[begeistert]</span> Weil das mehr als nur ein Dokument ist, Andreas! Das ist der Startschuss für einen echten Kulturwandel. Wir reden hier über die digitale Souveränität der Verwaltung. Der Grundsatz "Public Money, Public Code" ist doch eine ethische Verpflichtung! Wir nehmen Steuergelder, um Software zu bauen – dann sollten wir sie auch zurückgeben. Wir öffnen die Türen unserer Werkstatt, lassen andere reinschauen, von uns lernen und wir lernen von ihnen. Das ist modern, das ist mutig und stärkt am Ende das Vertrauen in uns als öffentliche Hand.</p>
-
             <p><span class="speaker-andreas">Andreas:</span> Das ist die Vision. Und damit diese Vision nicht im Chaos endet, haben wir versucht, einen praktischen Rahmen zu schaffen. Und darüber wollen wir heute sprechen. Ein zentraler Punkt sind die klaren Rollen. Ok, wir stellen uns das mal als "Band-Analogie" vor: Die Entwickler*innen sind die Musiker, die den Code schreiben. Die Produktverantwortlichen sind die Songwriter, die die Vision für den Hit haben.</p>
-
             <p><span class="speaker-achim">Achim:</span> Ein super Bild! Denn genau das brauchen wir: ein eingespieltes Orchester. Jeder muss sein Instrument kennen, damit am Ende eine Symphonie und keine Kakophonie dabei herauskommt. Klare Rollen sind die Basis für kreative Freiheit.</p>
-
             <p><span class="speaker-andreas">Andreas:</span> Und zur Rolle der Musiker, also der Entwickler, gehört noch ein wichtiger Punkt, der den Datenschutz von uns selbst betrifft. In der Anweisung steht, dass wir für öffentliche Beiträge nicht unsere persönlichen dienstlichen Adressen, sondern pseudonymisierte Adressen wie xyz@dev.dataport.de verwenden sollen.</p>
-
             <p><span class="speaker-achim">Achim:</span> Genau, und das ist ein ganz entscheidender Punkt! Wir wollen transparent sein, aber gleichzeitig die Privatsphäre unserer Mitarbeiter*innen schützen. Niemand soll Sorge haben, im Netz persönlich angegangen zu werden. Diese Regelung schafft eine professionelle Distanz und sorgt für die nötige Sicherheit im Team.</p>
-
             <p><span class="speaker-andreas">Andreas:</span> Gut, dann haben wir die Band und die E-Mail-Adressen. Aber es gibt ja noch das OSCC, das Open-Source-Competence-Center. In der Analogie ist das die Plattenfirma, die schaut, dass wir keine Urheberrechte verletzen.</p>
-
             <p><span class="speaker-achim">Achim:</span> <span class="direction">[lacht]</span> Exakt! Die, die dafür sorgen, dass wir nach dem Release nicht verklagt werden. Das OSCC ist unser juristisches und prozessuales Gewissen. Und ich als Abteilungsleiter bin dann sozusagen der Produzent, der nach all den Checks sagt: „Der Song hat Hit-Potenzial, den bringen wir raus!“</p>
-
             <p><span class="speaker-andreas">Andreas:</span> Perfekt. Dann lass uns über die Technik sprechen, das ist auch genau mein Part. Zum Beispiel Lizenzen. Wir haben als Standardlizenz die EUPL 1.2 genommen. Die ist für uns ideal: Sie wurde für den europäischen Rechtsraum geschaffen und ihre "Copyleft"-Klausel sorgt dafür, dass Weiterentwicklungen ebenfalls offen bleiben.</p>
-
             <p><span class="speaker-achim">Achim:</span> Und genau das unterstreicht doch unseren europäischen, wertebasierten Ansatz! Wir nutzen keinen Lizenz-Wildwuchs, sondern einen stabilen Rahmen, der für alle verständlich ist und unsere Prinzipien schützt.</p>
-
             <p><span class="speaker-andreas">Andreas:</span> Richtig. Für kleine, technische Bibliotheken haben wir aber auch Ausnahmen wie MIT oder Apache 2.0 vorgesehen, um maximale Wiederverwendung zu ermöglichen. Aber was, wenn wir externe Komponenten nutzen wollen? Um da den Überblick zu behalten, werden wir die SBOM, die "Software Bill of Materials", zur Pflicht machen.</p>
-
             <p><span class="speaker-achim">Achim:</span> Ah, die berühmte "Zutatenliste für Software", wie du es nennst.</p>
-
             <p><span class="speaker-andreas">Andreas:</span> <span class="direction">[lacht]</span> Genau. So wissen wir immer, was in unserem Code "drinsteckt" – welche Bibliotheken, welche Lizenzen, welche bekannten Sicherheitslücken. Das ist die Grundlage für jeden rechtlichen und technischen Check.</p>
-
             <p><span class="speaker-achim">Achim:</span> Das ist gelebte Transparenz! Wir legen die Karten auf den Tisch. Das ist ehrlich und schafft eine ganz neue Ebene des Vertrauens, nach innen und nach außen.</p>
-
             <p><span class="speaker-andreas">Andreas:</span> Absolut. Deshalb schreibt die Anweisung auch einen dreistufigen, automatisierten Sicherheitscheck vor: SAST, SCA und Secret Scanning.</p>
-
             <p><span class="speaker-achim">Achim:</span> Okay, jetzt musst du die Kürzel für uns Normalsterbliche übersetzen, Andreas.</p>
-
             <p><span class="speaker-andreas">Andreas:</span> Gerne. Stell es dir einfach vor: SAST (Static Application Security Testing) ist wie eine automatische Rechtschreibprüfung, nur für typische Sicherheitsfehler in unserem eigenen Code. SCA (Software Composition Analysis) prüft unsere "Zutatenliste", die SBOM, auf bekannte Allergien, also auf Sicherheitslücken in den externen Bibliotheken, die wir nutzen. Und Secret Scanning sucht nach dem versehentlich im Code vergessenen Backstage-Pass – also nach Passwörtern oder API-Schlüsseln.</p>
-
             <p><span class="speaker-achim">Achim:</span> Fantastisch erklärt. Wir liefern also quasi ein Produkt mit Sicherheits-TÜV und transparenter Zutatenliste. Und wie kommt dieses Qualitätsprodukt dann in die Welt?</p>
-
             <p><span class="speaker-andreas">Andreas:</span> Der Prozess ist klar: Nach den internen Checks und der Freigabe durch dich... <span class="direction">[zwinkert]</span> ...wird der Code auf den externen Plattformen veröffentlicht. Bevorzugt auf OpenCoDE.de, unserem Schaufenster für die deutsche Verwaltung.</p>
-
             <p><span class="speaker-achim">Achim:</span> Und dann ist Feierabend? Code online, Haken dran, nächstes Projekt?</p>
-            
             <p><span class="speaker-andreas">Andreas:</span> Auf keinen Fall, und das ist der wichtigste Kulturwandel. Die Arbeit fängt dann erst richtig an.</p>
-            
             <p><span class="speaker-achim">Achim:</span> Was machen wir, wenn 'TrollHunter42' ein Issue aufmacht und schreibt: "Euer Code ist Schrott"? Was ist die Reaktion nach unserer neuen Anweisung?</p>
-            
             <p><span class="speaker-andreas">Andreas:</span> <span class="direction">[lacht]</span> Tja, was würdest du als Abteilungsleiter vorschlagen?</p>
-            
             <p><span class="speaker-achim">Achim:</span> <span class="direction">[ironisch, mit gespieltem Ernst]</span>... Sofort einen Arbeitskreis gründen, um das Feedback zu evaluieren?</p>
-            
             <p><span class="speaker-andreas">Andreas:</span> <span class="direction">[lacht]</span> Falsche Antwort! Die Anweisung sagt: Wir nehmen das professionell. Wir antworten freundlich, fragen nach Details und sehen das Feedback als Geschenk. Wir haben uns sogar ein Ziel von 3-5 Werktagen für eine erste Reaktion gesetzt. Wir lassen die Community nicht im Regen stehen.</p>
-
             <p><span class="speaker-achim">Achim:</span> Das ist der Geist von Open Source. Wir gehen in den Dialog, wir lernen und verbessern uns gemeinsam. Ich kann es kaum erwarten zu sehen, welche großartigen Dinge daraus entstehen.</p>
-            
             <p><span class="speaker-andreas">Andreas:</span> Perfekt. Achim, danke, dass du die Vision hinter unserer praktischen Arbeit heute so klar skizziert hast.</p>
-            
             <p><span class="speaker-achim">Achim:</span> Und danke dir, Andreas, dass du diese Vision in ein so klares und funktionierendes Regelwerk gegossen hast!</p>
-            
             <p><span class="speaker-andreas">Andreas:</span> Und an euch im CCW: Wo finden wir diese Anweisung denn nun, Achim?</p>
-            
             <p><span class="speaker-achim">Achim:</span> Sie ist zentral im Confluence im Bereich des CCW abgelegt und für alle zugänglich. Einfach nach "Arbeitsanweisung Open Source" suchen. Aber so richtig verwaltungs-like wird es erst wenn die Anweisung in der E-Akte ist. Da könnt ihr sie auch finden.</p>
-
             <p><span class="speaker-andreas">Andreas:</span> Super. Das war's für heute bei "Entwickler-Behörde". Bis zum nächsten Mal!</p>
-
             <p><span class="direction">[Jingle von Anfang wird wieder eingespielt und blendet aus.]</span></p>
-            </div>
+        </div>
     </div>
 
     <script>
@@ -205,20 +199,32 @@
         const scriptContent = document.getElementById('script-content');
         const focusLine = document.getElementById('focus-line');
         const controlsInfo = document.getElementById('controls-info');
+        const mobileControls = document.getElementById('mobile-controls');
+        const slowBtn = document.getElementById('slow-btn');
+        const playPauseBtn = document.getElementById('play-pause-btn');
+        const fastBtn = document.getElementById('fast-btn');
         
         // Animationsvariablen
-        let scrollSpeed = 0.35; // Grundgeschwindigkeit. Kann angepasst werden.
-        let isPaused = true; // Startet pausiert
+        let scrollSpeed = 0.35; 
+        let isPaused = true;
         let position = 0;
         let animationFrameId;
 
         // Start-Funktion
         startButton.addEventListener('click', () => {
-            startButton.style.display = 'none'; // Button ausblenden
-            teleprompter.style.display = 'block'; // Teleprompter anzeigen
+            startButton.style.display = 'none'; 
+            teleprompter.style.display = 'block';
             focusLine.style.display = 'block';
-            controlsInfo.style.display = 'block';
-            isPaused = false; // Animation starten
+            
+            // Anzeigen der richtigen Steuerung je nach Gerät
+            if (window.innerWidth <= 768) {
+                mobileControls.style.display = 'flex';
+            } else {
+                controlsInfo.style.display = 'block';
+            }
+
+            isPaused = false;
+            playPauseBtn.innerHTML = '⏸';
             animate();
         });
 
@@ -227,7 +233,6 @@
                 position += scrollSpeed;
                 scriptContent.style.transform = `translateY(-${position}px)`;
 
-                // Wenn das Ende erreicht ist, stoppen
                 if (position > scriptContent.clientHeight + window.innerHeight) {
                     cancelAnimationFrame(animationFrameId);
                     return;
@@ -236,20 +241,39 @@
             animationFrameId = requestAnimationFrame(animate);
         }
 
-        // Steuerung per Tastatur
+        function togglePause() {
+            isPaused = !isPaused;
+            playPauseBtn.innerHTML = isPaused ? '▶' : '⏸';
+        }
+
+        function increaseSpeed() {
+             scrollSpeed += 0.05;
+        }
+
+        function decreaseSpeed() {
+            scrollSpeed = Math.max(0.05, scrollSpeed - 0.05);
+        }
+
+        // --- Event Listeners für die Steuerung ---
+
+        // Mobile Steuerung
+        playPauseBtn.addEventListener('click', togglePause);
+        fastBtn.addEventListener('click', increaseSpeed);
+        slowBtn.addEventListener('click', decreaseSpeed);
+
+        // Desktop Steuerung (Tastatur)
         document.addEventListener('keydown', (event) => {
-            // Leertaste zum Pausieren/Fortsetzen
+            if (teleprompter.style.display !== 'block') return; // Nur aktiv, wenn Teleprompter läuft
+
             if (event.code === 'Space') {
-                event.preventDefault(); // Verhindert Scrollen der Seite
-                isPaused = !isPaused;
+                event.preventDefault(); 
+                togglePause();
             }
-            // Plus-Taste zum Beschleunigen
             if (event.key === '+') {
-                scrollSpeed += 0.05;
+                increaseSpeed();
             }
-            // Minus-Taste zum Verlangsamen
             if (event.key === '-') {
-                scrollSpeed = Math.max(0.05, scrollSpeed - 0.05); // Verhindert negative Geschwindigkeit
+                decreaseSpeed();
             }
         });
     </script>
